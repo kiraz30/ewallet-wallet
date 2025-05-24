@@ -13,10 +13,10 @@ func main() {
 	helpers.SetupLogger()
 
 	//load database
-	// helpers.SetupMySQL()
+	helpers.SetupMySQL()
 
 	//run grpc
-	go cmd.ServeGRPC()
+	// go cmd.ServeGRPC()
 
 	//run http
 	cmd.ServeHTTP()

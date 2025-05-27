@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"ewallet-wallet/external"
 	"ewallet-wallet/helpers"
 	"ewallet-wallet/internal/api"
 	"ewallet-wallet/internal/interfaces"
@@ -35,6 +36,7 @@ type Dependency struct {
 	HealtyCheckApi   interfaces.IHealthCheckApi
 	WalletRepository interfaces.IWalletRepossitory
 	WalletApi        interfaces.IWalletApi
+	External         interfaces.IExternal
 }
 
 func dependencyInject() Dependency {
@@ -52,11 +54,13 @@ func dependencyInject() Dependency {
 	walletAPI := &api.WalletApi{
 		WalletService: walletSVC,
 	}
+	external := &external.External{}
 
 	return Dependency{
 		HealtyCheckApi:   healtyCheckAPI,
 		WalletRepository: walletRepository,
 		WalletApi:        walletAPI,
+		External:         external,
 	}
 
 }

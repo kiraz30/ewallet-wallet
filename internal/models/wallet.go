@@ -19,7 +19,7 @@ type WalletTransaction struct {
 	WalletID              int     `gorm:"column:wallet_id`
 	Amount                float64 `gorm:"column:amount;type:decimal(15,2)"`
 	WalletTransactionType string  `gorm:"column:wallet_transaction_type; type:ENUM('CREDIT', 'DEBIT')"`
-	Reference             string  `gorm:"column:reference_id;type:varchar(100)"`
+	Reference             string  `gorm:"column:reference_id;type:varchar(100)"; unique`
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 }

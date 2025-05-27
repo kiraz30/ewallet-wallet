@@ -12,7 +12,7 @@ import (
 )
 
 func ServeHTTP() {
-	dependency := dependencyInject()
+	d := dependencyInject()
 	healthCheckSVC := &services.HealthCheck{}
 	healtCheckAPI := &api.HealthCheck{
 		HealthCheckServices: healthCheckSVC,
@@ -22,7 +22,8 @@ func ServeHTTP() {
 	r.GET("/health", healtCheckAPI.HealthChecHandlerHTTP)
 
 	walletV1 := r.Group("/wallet/v1")
-	walletV1.POST("/", dependency.WalletApi.Create)
+	walletV1.POST("/", d.WalletApi.Create)
+	walletV1.PUT("/credit", d.MiddlewareValidateToken, d.WalletApi.CreaditBalance)
 
 	err := r.Run(":" + helpers.GetEnv("PORT", "8081"))
 	if err != nil {

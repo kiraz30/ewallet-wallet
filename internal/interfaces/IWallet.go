@@ -13,6 +13,7 @@ type IWalletRepossitory interface {
 	CreateWalletTransaction(ctx context.Context, walletTransaction *models.WalletTransaction) error
 	GetWalletTransactionByReference(ctx context.Context, reference string) (models.WalletTransaction, error)
 	GetWalletBalanceByUserID(ctx context.Context, userID int) (models.Wallet, error)
+	GetWalletHistory(ctx context.Context, walletID int, offset, limit int, transactionType string) ([]models.WalletTransaction, error)
 }
 
 type IWalletService interface {
@@ -20,6 +21,7 @@ type IWalletService interface {
 	CreaditBalance(ctx context.Context, userID int, req models.TransactiontRequest) (models.BalanceResponse, error)
 	DebitBalance(ctx context.Context, userID int, req models.TransactiontRequest) (models.BalanceResponse, error)
 	GetWalletBalance(ctx context.Context, userID int) (models.BalanceResponse, error)
+	GetWalletHistory(ctx context.Context, userID int, param models.WalletHistoryParam) ([]models.WalletTransaction, error)
 }
 
 type IWalletApi interface {
@@ -27,4 +29,5 @@ type IWalletApi interface {
 	CreaditBalance(c *gin.Context)
 	DebitBalance(c *gin.Context)
 	GetWalletBalance(c *gin.Context)
+	GetWalletHistory(c *gin.Context)
 }

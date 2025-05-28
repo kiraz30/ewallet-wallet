@@ -94,3 +94,23 @@ func (s *WalletService) GetWalletBalance(ctx context.Context, userID int) (model
 	response.Amount = wallet.Balance
 	return response, nil
 }
+func (s *WalletService) GetWalletHistory(ctx context.Context, userID int, param models.WalletHistoryParam) ([]models.WalletTransaction, error) {
+	var response []models.WalletTransaction
+
+	wallet, err := s.WalletRepository.GetWalletBalanceByUserID(ctx, userID)
+	if err != nil {
+		if err != gorm.ErrRecordNotFound {
+			return response, errors.Wrap(err, "failed to get wallet balance")
+		}
+
+	}
+
+	offset := (param.Page - 1) * (param.Limit)
+	response, err = s.WalletRepository.GetWalletHistory(ctx, wallet.ID, offset, param.Limit, param.WalletTransactionType)
+	if err != nil {
+		if err != gorm.ErrRecordNotFound {
+			return response, errors.Wrap(err, "failed to get wallet transaction history")
+		}
+	}
+	return response, nil
+}

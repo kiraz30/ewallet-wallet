@@ -48,6 +48,17 @@ func (r *WalletRepository) GetWalletTransactionByReference(ctx context.Context, 
 
 func (r *WalletRepository) GetWalletBalanceByUserID(ctx context.Context, userID int) (models.Wallet, error) {
 	var wallet models.Wallet
-	err := r.DB.Where("user_id = ?", userID).First(&wallet).Error
+	err := r.DB.Where("user_id = ?", userID).Last(&wallet).Error
 	return wallet, err
+}
+
+func (r *WalletRepository) GetWalletHistory(ctx context.Context, walletID int, offset, limit int, transactionType string) ([]models.WalletTransaction, error) {
+	var walletHistory []models.WalletTransaction
+	sql := r.DB
+	if transactionType != "" {
+		sql = sql.Where("wallet_transaction_type= ?", transactionType)
+	}
+	fmt.Println("Limit:", limit)
+	err := sql.Debug().Limit(limit).Offset(offset).Order("id DESC").Find(&walletHistory).Error
+	return walletHistory, err
 }

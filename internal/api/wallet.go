@@ -123,3 +123,28 @@ func (api *WalletApi) DebitBalance(c *gin.Context) {
 
 	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccessMessage, response)
 }
+
+func (api *WalletApi) GetWalletBalance(c *gin.Context) {
+	var log = helpers.Logger
+	token, ok := c.Get("token")
+	if !ok {
+		log.Error("failed to get token data")
+		helpers.SendResponseHTTP(c, http.StatusInternalServerError, constants.ErrServerError, nil)
+		return
+	}
+
+	tokenData, ok := token.(models.TokenData)
+	if !ok {
+		log.Error("failed to parse token data")
+		helpers.SendResponseHTTP(c, http.StatusInternalServerError, constants.ErrServerError, nil)
+		return
+	}
+
+	response, err := api.WalletService.GetWalletBalance(c.Request.Context(), int(tokenData.UserID))
+	if err != nil {
+		log.Error("failed to get wallet balance:", err)
+		helpers.SendResponseHTTP(c, http.StatusInternalServerError, constants.ErrServerError, nil)
+		return
+	}
+	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccessMessage, response)
+}

@@ -12,6 +12,6 @@ func (t TransactiontRequest) Validate() error {
 	return v.Struct(t)
 }
 
-type TransactiontResponse struct {
+type BalanceResponse struct {
 	Amount float64 `json:"balance"`
 }

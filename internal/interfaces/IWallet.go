@@ -12,16 +12,19 @@ type IWalletRepossitory interface {
 	UpdateBalance(ctx context.Context, userID int, amount float64) (models.Wallet, error)
 	CreateWalletTransaction(ctx context.Context, walletTransaction *models.WalletTransaction) error
 	GetWalletTransactionByReference(ctx context.Context, reference string) (models.WalletTransaction, error)
+	GetWalletBalanceByUserID(ctx context.Context, userID int) (models.Wallet, error)
 }
 
 type IWalletService interface {
 	Create(ctx context.Context, wallet *models.Wallet) error
-	CreaditBalance(ctx context.Context, userID int, req models.TransactiontRequest) (models.TransactiontResponse, error)
-	DebitBalance(ctx context.Context, userID int, req models.TransactiontRequest) (models.TransactiontResponse, error)
+	CreaditBalance(ctx context.Context, userID int, req models.TransactiontRequest) (models.BalanceResponse, error)
+	DebitBalance(ctx context.Context, userID int, req models.TransactiontRequest) (models.BalanceResponse, error)
+	GetWalletBalance(ctx context.Context, userID int) (models.BalanceResponse, error)
 }
 
 type IWalletApi interface {
 	Create(c *gin.Context)
 	CreaditBalance(c *gin.Context)
 	DebitBalance(c *gin.Context)
+	GetWalletBalance(c *gin.Context)
 }

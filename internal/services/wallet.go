@@ -17,8 +17,8 @@ func (s *WalletService) Create(ctx context.Context, wallet *models.Wallet) error
 	return s.WalletRepository.CreateWallet(ctx, wallet)
 }
 
-func (s *WalletService) CreaditBalance(ctx context.Context, userID int, req models.TransactiontRequest) (models.TransactiontResponse, error) {
-	var response models.TransactiontResponse
+func (s *WalletService) CreaditBalance(ctx context.Context, userID int, req models.TransactiontRequest) (models.BalanceResponse, error) {
+	var response models.BalanceResponse
 
 	TrxReference, err := s.WalletRepository.GetWalletTransactionByReference(ctx, req.Reference)
 	if err != nil {
@@ -49,8 +49,8 @@ func (s *WalletService) CreaditBalance(ctx context.Context, userID int, req mode
 	response.Amount = req.Amount + wallet.Balance
 	return response, nil
 }
-func (s *WalletService) DebitBalance(ctx context.Context, userID int, req models.TransactiontRequest) (models.TransactiontResponse, error) {
-	var response models.TransactiontResponse
+func (s *WalletService) DebitBalance(ctx context.Context, userID int, req models.TransactiontRequest) (models.BalanceResponse, error) {
+	var response models.BalanceResponse
 
 	TrxReference, err := s.WalletRepository.GetWalletTransactionByReference(ctx, req.Reference)
 	if err != nil {
@@ -79,5 +79,18 @@ func (s *WalletService) DebitBalance(ctx context.Context, userID int, req models
 
 	}
 	response.Amount = wallet.Balance - req.Amount
+	return response, nil
+}
+
+func (s *WalletService) GetWalletBalance(ctx context.Context, userID int) (models.BalanceResponse, error) {
+	var response models.BalanceResponse
+	wallet, err := s.WalletRepository.GetWalletBalanceByUserID(ctx, userID)
+	if err != nil {
+		if err != gorm.ErrRecordNotFound {
+			return response, errors.Wrap(err, "failed to get wallet transaction by reference")
+		}
+	}
+
+	response.Amount = wallet.Balance
 	return response, nil
 }

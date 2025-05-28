@@ -17,9 +17,11 @@ type IWalletRepossitory interface {
 type IWalletService interface {
 	Create(ctx context.Context, wallet *models.Wallet) error
 	CreaditBalance(ctx context.Context, userID int, req models.TransactiontRequest) (models.TransactiontResponse, error)
+	DebitBalance(ctx context.Context, userID int, req models.TransactiontRequest) (models.TransactiontResponse, error)
 }
 
 type IWalletApi interface {
 	Create(c *gin.Context)
 	CreaditBalance(c *gin.Context)
+	DebitBalance(c *gin.Context)
 }

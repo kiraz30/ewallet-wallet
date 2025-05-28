@@ -49,3 +49,35 @@ func (s *WalletService) CreaditBalance(ctx context.Context, userID int, req mode
 	response.Amount = req.Amount + wallet.Balance
 	return response, nil
 }
+func (s *WalletService) DebitBalance(ctx context.Context, userID int, req models.TransactiontRequest) (models.TransactiontResponse, error) {
+	var response models.TransactiontResponse
+
+	TrxReference, err := s.WalletRepository.GetWalletTransactionByReference(ctx, req.Reference)
+	if err != nil {
+		if err != gorm.ErrRecordNotFound {
+			return response, errors.Wrap(err, "failed to get wallet transaction by reference")
+		}
+	}
+
+	if TrxReference.ID > 0 {
+		return response, errors.New("reference already exists, please use another reference")
+	}
+	wallet, err := s.WalletRepository.UpdateBalance(ctx, userID, -req.Amount)
+	if err != nil {
+		return response, errors.Wrap(err, "failed to update wallet balance")
+	}
+
+	walletTansaction := &models.WalletTransaction{
+		WalletID:              wallet.ID,
+		Amount:                req.Amount,
+		Reference:             req.Reference,
+		WalletTransactionType: "DEBIT",
+	}
+	err = s.WalletRepository.CreateWalletTransaction(ctx, walletTansaction)
+	if err != nil {
+		return response, errors.Wrap(err, "failed to create wallet transaction")
+
+	}
+	response.Amount = wallet.Balance - req.Amount
+	return response, nil
+}

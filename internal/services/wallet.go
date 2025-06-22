@@ -4,6 +4,7 @@ import (
 	"context"
 	"ewallet-wallet/internal/interfaces"
 	"ewallet-wallet/internal/models"
+	"fmt"
 
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
@@ -84,6 +85,7 @@ func (s *WalletService) DebitBalance(ctx context.Context, userID int, req models
 
 func (s *WalletService) GetWalletBalance(ctx context.Context, userID int) (models.BalanceResponse, error) {
 	var response models.BalanceResponse
+	fmt.Println("User ID:", userID)
 	wallet, err := s.WalletRepository.GetWalletBalanceByUserID(ctx, userID)
 	if err != nil {
 		if err != gorm.ErrRecordNotFound {

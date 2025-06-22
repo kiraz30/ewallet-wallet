@@ -48,6 +48,7 @@ func (r *WalletRepository) GetWalletTransactionByReference(ctx context.Context, 
 
 func (r *WalletRepository) GetWalletBalanceByUserID(ctx context.Context, userID int) (models.Wallet, error) {
 	var wallet models.Wallet
+	fmt.Println("UserID:", userID)
 	err := r.DB.Where("user_id = ?", userID).Last(&wallet).Error
 	return wallet, err
 }
